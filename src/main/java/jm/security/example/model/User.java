@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "users_roles"
             , joinColumns = @JoinColumn(name = "users_id")
