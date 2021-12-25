@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 // Для того, чтобы в дальнейшим использовать класс User в Spring Security, он должен реализовывать интерфейс UserDetails.
@@ -20,8 +21,8 @@ public class User implements UserDetails {
     @Column(name = "age")
     private int age;
 
-    @Column(name = "surname")
-    private String surname;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "username")
     private String username; // уникальное значение
@@ -38,16 +39,16 @@ public class User implements UserDetails {
             , joinColumns = @JoinColumn(name = "users_id")
             , inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
 
     }
 
-    public User(Long id, int age, String surname, String username, String password, String email) {
+    public User(Long id, int age, String name, String username, String password, String email) {
         this.id = id;
         this.age = age;
-        this.surname = surname;
+        this.name = name;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -69,12 +70,12 @@ public class User implements UserDetails {
         this.age = age;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getName() {
+        return name;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setName(String surname) {
+        this.name = surname;
     }
 
     @Override
