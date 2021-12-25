@@ -3,26 +3,54 @@ package jm.security.example.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
 // Для того, чтобы в дальнейшим использовать класс User в Spring Security, он должен реализовывать интерфейс UserDetails.
 // UserDetails можно представить, как адаптер между БД пользователей и тем что требуется Spring Security внутри SecurityContextHolder
+@Entity
+@Table(name = "users")
 public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "users_id")
     private Long id;
-    private String name; // уникальное значение
+
+    @Column(name = "age")
+    private int age;
+
+    @Column(name = "surname")
+    private String surname;
+
+    @Column(name = "username")
+    private String username; // уникальное значение
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "email")
+    private String email;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles"
+            , joinColumns = @JoinColumn(name = "users_id")
+            , inverseJoinColumns = @JoinColumn(name = "roles_id")
+    )
     private Set<Role> roles;
 
     public User() {
 
     }
 
-    public User(Long id, String name, String password, Set<Role> roles) {
+    public User(Long id, int age, String surname, String username, String password, String email) {
         this.id = id;
-        this.name = name;
+        this.age = age;
+        this.surname = surname;
+        this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.email = email;
     }
 
     public Long getId() {
@@ -33,14 +61,42 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public int getAge() {
+        return age;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAge(int age) {
+        this.age = age;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -49,13 +105,9 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
-    @Override
-    public String getUsername() {
-        return name;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -77,9 +129,7 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
 
     public Set<Role> getRoles() {
         return roles;
