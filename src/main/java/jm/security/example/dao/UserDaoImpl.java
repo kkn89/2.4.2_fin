@@ -2,6 +2,7 @@ package jm.security.example.dao;
 
 import jm.security.example.model.Role;
 import jm.security.example.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,10 @@ public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public UserDaoImpl() {
+    }
 
     @Override
     @Transactional
