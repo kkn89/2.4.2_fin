@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Transactional
 public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
@@ -23,7 +24,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    @Transactional
+
     public List<User> allUsers() {
         return entityManager.createQuery("FROM User", User.class).getResultList();
     }
@@ -47,13 +48,17 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(int id) {
-        entityManager.remove(getById(id));
+        entityManager.createQuery("delete from User o where o.id=:id").setParameter("id", id).executeUpdate();
 
     }
 
     @Override
     public User getUserByName(String username) {
-        return entityManager.find(User.class, username);
+
+        return entityManager.createQuery(
+                        "SELECT user FROM User user WHERE user.username =:username", User.class)
+                .setParameter("username", username)
+                .getSingleResult();
     }
 
 

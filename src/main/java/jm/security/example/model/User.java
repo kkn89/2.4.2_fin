@@ -39,7 +39,7 @@ public class User implements UserDetails {
             , joinColumns = @JoinColumn(name = "users_id")
             , inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles;
 
     public User() {
 
@@ -47,6 +47,23 @@ public class User implements UserDetails {
 
     public User(Long id, int age, String name, String username, String password, String email) {
         this.id = id;
+        this.age = age;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
+    public User(int age, String name, String username, String password, String email, Set<Role> roles) {
+        this.age = age;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+    }
+
+    public User(int age, String name, String username, String password, String email) {
         this.age = age;
         this.name = name;
         this.username = username;

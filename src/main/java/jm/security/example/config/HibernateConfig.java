@@ -55,7 +55,7 @@ public class HibernateConfig {
         LocalContainerEntityManagerFactoryBean lc
                 = new LocalContainerEntityManagerFactoryBean();
         lc.setDataSource(getDataSource());
-        lc.setPackagesToScan(new String[]{"jm.security.example.model"});
+        lc.setPackagesToScan(new String[]{"jm.security.example.model"});    //сканирование тех папок, где находятся энтити
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         lc.setJpaVendorAdapter(vendorAdapter);
         lc.setJpaProperties(additionalProperties());
