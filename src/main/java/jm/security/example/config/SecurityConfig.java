@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -56,29 +56,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()); // конфигурация для прохождения аутентификации
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        http.authorizeRequests()
+                .antMatchers("/", "/user")
+                //указываем что будет видно ролям Admin и User
+                .hasAnyRole("ADMIN, USER")
+                .antMatchers("/**")
+                // Все что дальше /** видно только роли Admin
+                .hasAnyRole("ADMIN")
+                .and()
+                .formLogin() // Spring сам подставит свою логин форму
+                .successHandler(successUserHandler) // подключаем наш SuccessHandler для перенаправления по ролям
+                // Handler - обработчик успешной аутентификации
                 .permitAll()
-                .successHandler(successUserHandler)
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .permitAll();
-
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
-                .anyRequest().authenticated()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                //выключаем кроссдоменную секьюрность
+                .and().csrf().disable();
     }
 
 //    @Override

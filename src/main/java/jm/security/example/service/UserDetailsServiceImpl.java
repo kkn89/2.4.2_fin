@@ -28,10 +28,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     // Для создания UserDetails используется интерфейс UserDetailsService, с единственным методом:
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = findByUsername(name);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found", name));
+            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
         }
         return user;
     }
