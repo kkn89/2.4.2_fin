@@ -26,7 +26,8 @@ public class UserDaoImpl implements UserDao {
     @Override
 
     public List<User> allUsers() {
-        return entityManager.createQuery("FROM User", User.class).getResultList();
+        return entityManager.createQuery("select distinct u from User u join fetch u.roles",
+                User.class).getResultList();
     }
 
     @Override
@@ -36,18 +37,25 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getById(int id) {
+    public User getById(long id) {
         return entityManager.find(User.class, id);
     }
 
     @Override
-    public void update(User user) {
-        entityManager.merge(user);
+    public void update(long id,User updatedUser) {
+        User user = getById(id);
+        user.setName(updatedUser.getName());
+        user.setUsername(updatedUser.getUsername());
+        user.setAge(updatedUser.getAge());
+        user.setEmail(updatedUser.getEmail());
+        if (updatedUser.getPassword() != "")
+            user.setPassword(updatedUser.getPassword());
+        user.setRoles(updatedUser.getRoles());
 
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         entityManager.createQuery("delete from User o where o.id=:id").setParameter("id", id).executeUpdate();
 
     }
@@ -61,16 +69,5 @@ public class UserDaoImpl implements UserDao {
     }
 
 
-//    private final Map<String, User> userMap = Collections.singletonMap("test",
-//            new User(1L, "test", "test", Collections.singleton(new Role(1L, "ROLE_USER",users)))); // name - уникальное значение, выступает в качестве ключа Map
-//
-//    @Override
-//    public User getUserByName(String name) {
-//        if (!userMap.containsKey(name)) {
-//            return null;
-//        }
-//
-//        return userMap.get(name);
-//    }
 }
 

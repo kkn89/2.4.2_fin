@@ -2,6 +2,8 @@ package jm.security.example.service;
 
 import jm.security.example.dao.UserDao;
 import jm.security.example.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -10,9 +12,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDao userDao) {
+    @Autowired
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -24,26 +29,30 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.saveUser(user);
 
     }
 
     @Override
     @Transactional
-    public User getById(int id) {
+    public User getById(long id) {
         return userDao.getById(id);
     }
 
     @Override
     @Transactional
-    public void update(User user) {
-        userDao.update(user);
+    public void update(long id, User updatedUser) {
+        if(updatedUser.getPassword() != ""){
+            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+        userDao.update(id, updatedUser);
 
     }
 
     @Override
     @Transactional
-    public void delete(int id) {
+    public void delete(long id) {
         userDao.delete(id);
 
     }

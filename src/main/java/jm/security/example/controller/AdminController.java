@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Access;
 import java.util.List;
 
 @Controller
@@ -18,7 +19,7 @@ public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
 
-
+    @Autowired
     public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
@@ -51,9 +52,9 @@ public class AdminController {
         return "edit-user";
     }
     @PatchMapping("/edit/{id}")
-    public String editUser(@ModelAttribute User user, @RequestParam("roles") String[] role) {
+    public String editUser(@ModelAttribute User user, @RequestParam("roles") String[] role,  @PathVariable(value = "id") long id) {
         user.setRoles(roleService.getRoleSet(role));
-        userService.update(user);
+        userService.update(id, user);
         return "redirect:/admin";
     }
     @DeleteMapping("/delete/{id}")

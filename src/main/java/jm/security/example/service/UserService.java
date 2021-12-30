@@ -9,11 +9,11 @@ public interface UserService {
 
     void saveUser(User user);
 
-    User getById(int id);
+    User getById(long id);
 
-    void update(User user);
+    void update(long id, User updatedUser);
 
-    void delete(int id);
+    void delete(long id);
 
     User getUserByName(String username);
 }
